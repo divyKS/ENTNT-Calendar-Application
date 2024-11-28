@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require('../models/users');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -46,10 +46,14 @@ const login = async (req, res) => {
             { expiresIn: '1h' }
         );
 
-        res.json({ message: 'Signin successful', token, role: user.role });
+        res.json({ message: 'Login successful', token, role: user.role });
     } catch (error) {
         res.status(500).json({ message: 'Error during signin', error });
     }
 };
 
-module.exports = { signup, login };
+const logout = async (req, res) => {
+    res.status(200).json({ message: 'Logout successful' });
+};
+
+module.exports = { signup, login, logout };
