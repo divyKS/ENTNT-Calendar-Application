@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import NotificationBadge from './NotificationBadge';
 
 const UserDashboard = () => {
     const [dashboardData, setDashboardData] = useState([]);
@@ -55,7 +56,10 @@ const UserDashboard = () => {
 
     return (
         <div>
-            <h2>Dashboard</h2>
+            <nav>
+                <h2>Dashboard</h2>
+                <NotificationBadge />
+            </nav>
             {!showModal && <table>
                 <thead>
                     <tr>
