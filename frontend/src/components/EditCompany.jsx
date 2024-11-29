@@ -65,7 +65,7 @@ const EditCompany = () => {
         try {
             await updateCompany(id, company);
             alert('Company updated successfully');
-            navigate('/companies');
+            navigate('/admin');
         } catch (error) {
             alert('Failed to update company.');
         }

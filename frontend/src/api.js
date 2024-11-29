@@ -2,7 +2,7 @@ import axios from 'axios';
 const BASE_URL = 'http://localhost:3500/api'; // Your backend URL
 
 export const signup = async (data) => {
-    const response = await fetch(`${BASE_URL}/user/signup`, {
+    const response = await fetch(`${BASE_URL}/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -11,7 +11,7 @@ export const signup = async (data) => {
 };
 
 export const login = async (data) => {
-    const response = await fetch(`${BASE_URL}/user/login`, {
+    const response = await fetch(`${BASE_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),

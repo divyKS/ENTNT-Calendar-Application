@@ -16,6 +16,16 @@ const companySchema = new mongoose.Schema({
     comments: { type: String },
     communicationPeriodicity: { type: String, default: '14' },
     communications: [communicationSchema], // Communication methods associated with the company
+    nextCommunication: {
+        type: {
+            type: String,
+            default: '',
+        },
+        date: {
+            type: Date,
+            default: null,
+        },
+    },
 });
 
 module.exports = mongoose.model('Company', companySchema);

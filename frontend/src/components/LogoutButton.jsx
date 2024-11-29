@@ -10,7 +10,7 @@ const LogoutButton = () => {
         localStorage.removeItem('role');
 
         // Optionally call a backend logout endpoint
-        fetch('http://localhost:3500/api/user/logout', { method: 'POST' })
+        fetch('http://localhost:3500/api/auth/logout', { method: 'POST' })
             .then(() => {
                 navigate('/login');
             })
