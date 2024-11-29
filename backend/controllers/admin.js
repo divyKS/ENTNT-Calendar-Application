@@ -1,10 +1,39 @@
 const company = require('../models/company');
 
 const addCompany = async (req, res) => {
-    try {
-        const { name, location, linkedinProfile, emails, phoneNumbers, comments, communicationPeriodicity, communications } = req.body;
+    const { name, location, linkedinProfile, emails, phoneNumbers, comments, communicationPeriodicity, communications } = req.body;
+    // try {
 
-        const newCompany = new company({
+    //     const newCompany = new company({
+    //         name,
+    //         location,
+    //         linkedinProfile,
+    //         emails,
+    //         phoneNumbers,
+    //         comments,
+    //         communicationPeriodicity,
+    //         communications,
+    //     });
+
+    //     const savedCompany = await newCompany.save();
+    //     res.status(201).json({ message: 'Company added successfully', company: savedCompany });
+    // } catch (error) {
+    //     res.status(500).json({ message: 'Error adding company', error });
+    // }
+
+    try {
+        // Ensure communication methods exist
+        if (!communications || communications.length === 0) {
+            return res.status(400).json({ error: 'Communication methods are required.' });
+        }
+
+        const firstMethod = communications[0];
+        const nextCommunication = {
+            type: firstMethod.method,
+            date: new Date().setDate(new Date().getDate() + 1),
+        };
+
+        const companyCreated = await company.create({
             name,
             location,
             linkedinProfile,
@@ -13,13 +42,15 @@ const addCompany = async (req, res) => {
             comments,
             communicationPeriodicity,
             communications,
+            nextCommunication,
         });
 
-        const savedCompany = await newCompany.save();
-        res.status(201).json({ message: 'Company added successfully', company: savedCompany });
-    } catch (error) {
-        res.status(500).json({ message: 'Error adding company', error });
+        res.status(201).json(companyCreated);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to create company.' });
     }
+
+
 }
 
 const getCompanies = async (req, res) => {

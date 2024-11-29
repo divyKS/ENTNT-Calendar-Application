@@ -4,6 +4,6 @@ const { getCompaniesInfoForUserDashboard, logCommunication } = require('../contr
 const router = express.Router();
 
 router.get('/dashboard', getCompaniesInfoForUserDashboard);
-router.get('/log-communication', logCommunication);
+router.post('/log-communication/:companyId', logCommunication);
 
 module.exports = router;
