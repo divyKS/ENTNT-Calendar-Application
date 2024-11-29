@@ -30,3 +30,22 @@ export const fetchCompanies = async () => {
         throw error;
     }
 };
+
+export const updateCompany = async (id, updates) => {
+    try {
+        const response = await axios.put(`${BASE_URL}/admin/companies/${id}`, updates);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating company:', error);
+        throw error;
+    }
+};
+
+export const deleteCompany = async (id) => {
+    try {
+        await axios.delete(`${BASE_URL}/admin/companies/${id}`);
+    } catch (error) {
+        console.error('Error deleting company:', error);
+        throw error;
+    }
+};

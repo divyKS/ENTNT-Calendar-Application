@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { fetchCompanies } from '../api';
+import { deleteCompany, fetchCompanies } from '../api';
+import { useNavigate } from "react-router";
 
 const AdminForm = () => {
+    
     const defaultMethods = [
         { method: 'LinkedIn Post', description: 'Post about the company', sequence: 1, mandatory: true },
         { method: 'LinkedIn Message', description: 'Send a message on LinkedIn', sequence: 2, mandatory: true },
@@ -197,6 +199,23 @@ const CompaniesList = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const navigate = useNavigate();
+
+    const handleEdit = (id) => {
+        navigate(`/admin/edit-company/${id}`);
+    };
+
+    const handleDelete = async (id) => {
+        if (window.confirm('Are you sure you want to delete this company?')) {
+            try {
+                await deleteCompany(id);
+                fetchCompanies(); // Refresh the list after deletion
+            } catch (error) {
+                alert('Failed to delete company.');
+            }
+        }
+    };
+
     useEffect(() => {
         const getCompanies = async () => {
             try {
@@ -230,6 +249,8 @@ const CompaniesList = () => {
                     {companies.map((company) => (
                         <li key={company._id}>
                             <strong>{company.name}</strong> - {company.location}
+                            <button onClick={() => handleEdit(company._id)}>Edit</button>
+                            <button onClick={() => handleDelete(company._id)}>Delete</button>
                         </li>
                     ))}
                 </ul>
