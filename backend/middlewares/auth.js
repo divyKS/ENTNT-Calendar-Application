@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET || "";
 
 const authenticateUser = (req, res, next) => {
     const token = req.headers.authorization?.split(' ')[1];
@@ -20,6 +20,14 @@ const authenticateUser = (req, res, next) => {
 const isAdmin = (req, res, next) => {
     if (req.user.role !== 'Admin') {
         return res.status(403).json({ message: 'Access denied: Admins only' });
+    }
+    next();
+};
+
+
+const isUser = (req, res, next) => {
+    if (req.user.role !== 'User') {
+        return res.status(403).json({ message: 'Access denied: Users only' });
     }
     next();
 };
