@@ -1,20 +1,20 @@
-import React from 'react';
+import React from "react";
 import { Navigate, useNavigate } from "react-router";
 
 const ProtectedRoute = ({ children, role }) => {
-    const token = localStorage.getItem('token');
-    const userRole = localStorage.getItem('role');
-    let navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  const userRole = localStorage.getItem("role");
+  let navigate = useNavigate();
 
-    if (!token) {
-        return  <Navigate to={"/login"} />
-    }
+  if (!token) {
+    return <Navigate to={"/login"} />;
+  }
 
-    if (role && role !== userRole) {
-        return <Navigate to={`/${userRole?.toLowerCase()}`} />;
-    }
+  if (role && role !== userRole) {
+    return <Navigate to={`/${userRole?.toLowerCase()}`} />;
+  }
 
-    return children;
+  return children;
 };
 
 export default ProtectedRoute;
