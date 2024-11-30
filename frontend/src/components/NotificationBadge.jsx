@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-// import { FaBell } from 'react-icons/fa';
+import { FaBell } from 'react-icons/fa';
 import axios from 'axios';
 import { Link } from "react-router";
 
@@ -22,15 +22,15 @@ const NotificationBadge = () => {
 
     return (
         <div className="relative">
-            {/* <FaBell className="text-2xl text-gray-600" /> */}
             <Link to="/notifs">
-                Notification - {badgeCount}
+                <FaBell className="text-2xl text-gray-600" />
+                {badgeCount > 0 && (
+                    <span className="absolute -top-2 left-2 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
+                        {badgeCount}
+                    </span>
+                )}
+                
             </Link>
-            {/* {badgeCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
-                    {badgeCount}
-                </span>
-            )} */}
         </div>
     );
 };
