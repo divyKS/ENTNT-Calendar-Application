@@ -1,116 +1,83 @@
-import React, { useState, useEffect } from 'react';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
+import React, { useEffect, useState } from 'react';
+import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 import axios from 'axios';
+import { format, parse, startOfWeek, getDay } from "date-fns";
+import { enUS } from "date-fns/locale"
+
+const locales = {
+    'en-US': enUS,
+};
+
+const localizer = dateFnsLocalizer({
+    format,
+    parse,
+    startOfWeek,
+    getDay,
+    locales,
+});
 
 
 const CalendarView = () => {
-    const [communications, setCommunications] = useState({ past: [], upcoming: [] });
-    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [events, setEvents] = useState([]);
 
     useEffect(() => {
-        // Fetch calendar communications for all companies
+        // Fetch all communications for calendar view
         axios.get('http://localhost:3500/api/calendar/getCommunications')
-        .then((res) => setCommunications(res.data))
-        
-            .catch((err) => console.error('Error fetching calendar data:', err));
+            .then((response) => {
+                const { past, upcoming } = response.data;
+
+                // Map communications into Big Calendar's event format
+                const mappedEvents = [
+                    ...past.map((comm) => ({
+                        title: `${comm.companyName} - ${comm.method} ✅`,
+                        start: new Date(comm.date),
+                        end: new Date(comm.date),
+                        allDay: true,
+                        type: 'past', // Custom field for type identification
+                        notes: comm.notes,
+                    })),
+                    ...upcoming.map((comm) => ({
+                        title: `${comm.companyName} - ${comm.method} 📅`,
+                        start: new Date(comm.date),
+                        end: new Date(comm.date),
+                        allDay: true,
+                        type: 'upcoming', // Custom field for type identification
+                    })),
+                ];
+
+                setEvents(mappedEvents);
+            })
+            .catch((error) => console.error('Error fetching calendar communications:', error));
     }, []);
 
-    useEffect(()=>{
-        console.log(communications);
-    }, [communications])
-
-    const tileContent = ({ date, view }) => {
-        if (view === 'month') {
-            const formattedDate = date.toDateString();
-
-            const past = communications.past.filter(
-                (comm) => new Date(comm.date).toDateString() === formattedDate
-            );
-            const upcoming = communications.upcoming.filter(
-                (comm) => new Date(comm.date).toDateString() === formattedDate
-            );
-
-            return (
-                <div>
-                    {past.length > 0 && <div>✅ {past.length}</div>}
-                    {upcoming.length > 0 && <div>📅 {upcoming.length}</div>}
-                    
-                    {/* {past.map((comm, index) => (
-                        <div key={index} className="bg-green-200 text-xs p-1 rounded">
-                            ✅ {comm.companyName} - {comm.method}
-                        </div>
-                    ))}
-                    {upcoming.map((comm, index) => (
-                        <div key={index} className="bg-yellow-200 text-xs p-1 rounded">
-                            📅 {comm.companyName} - {comm.method}
-                        </div>
-                    ))} */}
-                </div>
-            );
-        }
-        return null;
+    const eventStyleGetter = (event) => {
+        const style = {
+            backgroundColor: event.type === 'past' ? '#d4edda' : '#ffeeba', // Green for past, Yellow for upcoming
+            borderRadius: '5px',
+            opacity: 0.8,
+            color: 'black',
+            border: 'none',
+            display: 'block',
+            padding: '5px',
+        };
+        return { style };
     };
-
-    const getDetailsForDate = (date) => {
-        const formattedDate = date.toDateString();
-
-        const past = communications.past.filter(
-            (comm) => new Date(comm.date).toDateString() === formattedDate
-        );
-        const upcoming = communications.upcoming.filter(
-            (comm) => new Date(comm.date).toDateString() === formattedDate
-        );
-
-        return { past, upcoming };
-    };
-
-    const detailsForSelectedDate = getDetailsForDate(selectedDate);
 
     return (
-        <div>
+        <div className="calendar-container">
             <h2 className="text-lg font-bold mb-4">Communication Calendar</h2>
             <Calendar
-                onChange={setSelectedDate}
-                value={selectedDate}
-                tileContent={tileContent}
-                className={["w-96"]}
+                localizer={localizer}
+                events={events}
+                startAccessor="start"
+                endAccessor="end"
+                style={{ height: 600 }}
+                eventPropGetter={eventStyleGetter}
+                popup
             />
-            {selectedDate && (
-                <div className="mt-4">
-                    <h3 className="text-md font-semibold">Details for {selectedDate.toDateString()}</h3>
-                    <div>
-                        <h4 className="font-medium">Past Communications:</h4>
-                        {detailsForSelectedDate.past.length > 0 ? (
-                            detailsForSelectedDate.past.map((comm, index) => (
-                                <p key={index}>
-                                    <strong>{comm.companyName}</strong>: {comm.method} - {comm.notes}
-                                </p>
-                            ))
-                        ) : (
-                            <p>No past communications.</p>
-                        )}
-                    </div>
-                    <div>
-                        <h4 className="font-medium">Upcoming Communications:</h4>
-                        {detailsForSelectedDate.upcoming.length > 0 ? (
-                            detailsForSelectedDate.upcoming.map((comm, index) => (
-                                <p key={index}>
-                                    <strong>{comm.companyName}</strong>: {comm.method} - Scheduled for{' '}
-                                    {new Date(comm.date).toLocaleDateString()}
-                                </p>
-                            ))
-                        ) : (
-                            <p>No upcoming communications.</p>
-                        )}
-                    </div>
-                </div>
-            )}
         </div>
     );
-    
-
-
 
 };
 

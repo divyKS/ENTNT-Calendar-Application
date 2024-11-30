@@ -4,7 +4,7 @@ const tasksOverDueAndDueToday = async (req, res) => {
     try {
         const currentDate = new Date();
 
-        const companies = await company.find();
+        const companies = await company.find().populate('communications');
 
         const overdue = [];
         const today = [];
@@ -14,15 +14,14 @@ const tasksOverDueAndDueToday = async (req, res) => {
                 if(!comm.complete){
                     if (comm.dateDue < currentDate) {
                         overdue.push({ companyId: company._id, name: company.name, method: comm.method, dueDate: comm.dateDue });
-                    } else if (
-                        comm.dateDue >= currentDate &&
-                        comm.dateDue < new Date(currentDate.setDate(currentDate.getDate() + 1))
-                    ) {
+                    } else if (comm.dateDue == currentDate && comm.dateDue < new Date(currentDate.setDate(currentDate.getDate() + 1))) {
                         today.push({ companyId: company._id, name: company.name, method: comm.method, dueDate: comm.dateDue });
                     }
                 }
             });
         });
+
+        
 
         res.status(200).json({ overdue, today });
         // const currentDate = new Date();

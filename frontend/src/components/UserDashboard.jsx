@@ -70,16 +70,18 @@ const UserDashboard = () => {
                 </thead>
                 <tbody>
                     {dashboardData.map((company) => (
+                       
                         <tr
                             key={company.companyId}
                             style={{
                                 backgroundColor:
-                                    new Date(company.nextCommunication?.date) < new Date()
-                                        ? 'red'
-                                        : new Date(company.nextCommunication?.date).toDateString() ===
-                                          new Date().toDateString()
-                                        ? 'yellow'
-                                        : 'white',
+                                    company.lastFiveCommunications.length == 5
+                                        ? '#ACE1AF' // Communication is completed
+                                        : new Date(company.nextCommunication?.date) < new Date()
+                                        ? 'red' // Overdue
+                                        : new Date(company.nextCommunication?.date).toDateString() === new Date().toDateString()
+                                        ? 'yellow' // Due today
+                                        : 'white', // No issues
                             }}
                         >
                             <td>{company.companyName}</td>
@@ -107,7 +109,7 @@ const UserDashboard = () => {
 
                             {company.lastFiveCommunications.length == 5 ? (
                                 <td>
-                                    N/A
+                                    Nothing scheduled
                                 </td>
                             ) : (
                                 <td>
