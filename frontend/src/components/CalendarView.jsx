@@ -90,7 +90,6 @@ const CalendarView = () => {
                     <p><strong>Method:</strong> {selectedEvent.title.split('-')[1].trim()}</p>
                     <p><strong>Date:</strong> {new Date(selectedEvent.start).toLocaleDateString()}</p>
                     <p><strong>Notes:</strong> {selectedEvent.notes ? selectedEvent.notes : 'N/A'}</p>
-                    {console.log(selectedEvent)}
                 </div>
             )}
         </div>

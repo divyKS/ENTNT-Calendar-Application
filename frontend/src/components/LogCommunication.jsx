@@ -9,12 +9,6 @@ const LogCommunication = ({ companyId, onClose }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            console.log({
-                companyId,
-                type,
-                date,
-                notes,
-            })
             await axios.post('http://localhost:3500/api/user/log-communication', {
                 companyId,
                 type,
