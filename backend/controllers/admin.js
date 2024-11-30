@@ -3,7 +3,6 @@ const company = require('../models/company');
 const addCompany = async (req, res) => {
     const { name, location, linkedinProfile, emails, phoneNumbers, comments, communicationPeriodicity, communications } = req.body;
     // try {
-
     //     const newCompany = new company({
     //         name,
     //         location,
@@ -14,7 +13,6 @@ const addCompany = async (req, res) => {
     //         communicationPeriodicity,
     //         communications,
     //     });
-
     //     const savedCompany = await newCompany.save();
     //     res.status(201).json({ message: 'Company added successfully', company: savedCompany });
     // } catch (error) {
@@ -27,11 +25,20 @@ const addCompany = async (req, res) => {
             return res.status(400).json({ error: 'Communication methods are required.' });
         }
 
-        const firstMethod = communications[0];
-        const nextCommunication = {
-            type: firstMethod.method,
-            date: new Date().setDate(new Date().getDate() + 1),
-        };
+        // now having at correct intervals, not using this
+        // const firstMethod = communications[0];
+        // const nextCommunication = {
+        //     type: firstMethod.method,
+        //     date: new Date().setDate(new Date().getDate() + 1),
+        // };
+
+        const currentDate = new Date();
+
+        // Set initial dates for all communication methods
+        const updatedCommunications = communications.map((comm, index) => ({
+            ...comm,
+            dateDue: new Date(currentDate.setDate(currentDate.getDate() + index * communicationPeriodicity)),
+        }));
 
         const companyCreated = await company.create({
             name,
@@ -41,8 +48,11 @@ const addCompany = async (req, res) => {
             phoneNumbers,
             comments,
             communicationPeriodicity,
-            communications,
-            nextCommunication,
+            communications: updatedCommunications,
+            nextCommunication: {
+                type: updatedCommunications[0].method,
+                date: updatedCommunications[0].dateDue,
+            },
         });
 
         res.status(201).json(companyCreated);

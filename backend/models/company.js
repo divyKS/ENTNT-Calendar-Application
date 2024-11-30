@@ -5,7 +5,8 @@ const communicationSchema = new mongoose.Schema({
     description: { type: String, required: true }, // E.g., "Post about the company"
     sequence: { type: Number, required: true }, // Order of execution
     mandatory: { type: Boolean, default: false }, // Is this step mandatory?
-    dateDue: { type: Date, required: true }
+    dateDue: { type: Date, required: true },
+    complete: { type: Boolean, default: false },
 });
 
 const companySchema = new mongoose.Schema({
