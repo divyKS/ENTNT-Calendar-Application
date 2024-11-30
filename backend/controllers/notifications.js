@@ -3,6 +3,7 @@ const company = require("../models/company");
 const tasksOverDueAndDueToday = async (req, res) => {
     try {
         const currentDate = new Date();
+        const normalizedToday = currentDate.toDateString();
 
         const companies = await company.find().populate('communications');
 
@@ -11,13 +12,32 @@ const tasksOverDueAndDueToday = async (req, res) => {
 
         companies.forEach((company) => {
             company.communications.forEach(async (comm) => {
-                if(!comm.complete){
-                    if (comm.dateDue < currentDate) {
-                        overdue.push({ companyId: company._id, name: company.name, method: comm.method, dueDate: comm.dateDue });
-                    } else if (comm.dateDue == currentDate && comm.dateDue < new Date(currentDate.setDate(currentDate.getDate() + 1))) {
-                        today.push({ companyId: company._id, name: company.name, method: comm.method, dueDate: comm.dateDue });
+                const communicationDate = new Date(comm.dateDue).toDateString();
+                
+                if (!comm.complete) {
+                    if (new Date(comm.dateDue) < currentDate) {
+                        overdue.push({
+                            companyId: company._id,
+                            name: company.name,
+                            method: comm.method,
+                            dueDate: comm.dateDue
+                        });
+                    } else if (communicationDate === normalizedToday) { // we are ignoring time and only considering the days
+                        today.push({
+                            companyId: company._id,
+                            name: company.name,
+                            method: comm.method,
+                            dueDate: comm.dateDue
+                        });
                     }
                 }
+                // if(!comm.complete){
+                //     if (comm.dateDue < currentDate) {
+                //         overdue.push({ companyId: company._id, name: company.name, method: comm.method, dueDate: comm.dateDue });
+                //     } else if (comm.dateDue == currentDate && comm.dateDue < new Date(currentDate.setDate(currentDate.getDate() + 1))) {
+                //         today.push({ companyId: company._id, name: company.name, method: comm.method, dueDate: comm.dateDue });
+                //     }
+                // }
             });
         });
 
