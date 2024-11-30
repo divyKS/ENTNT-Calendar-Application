@@ -3,22 +3,7 @@ import { FaBell } from 'react-icons/fa';
 import axios from 'axios';
 import { Link } from "react-router";
 
-const NotificationBadge = () => {
-    const [badgeCount, setBadgeCount] = useState(0);
-
-    useEffect(() => {
-        const fetchBadgeCount = async () => {
-            try {
-                const { data } = await axios.get('http://localhost:3500/api/notifications/getAll');
-                // console.log(data);
-                const total = data.overdue.length + data.today.length;
-                setBadgeCount(total);
-            } catch (error) {
-                console.error('Error fetching notification count:', error);
-            }
-        };
-        fetchBadgeCount();
-    }, []);
+const NotificationBadge = ({badgeCount}) => {
 
     return (
         <div className="relative">

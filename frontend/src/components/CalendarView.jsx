@@ -4,7 +4,8 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import axios from "axios";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import { enUS } from "date-fns/locale";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { FaHome } from "react-icons/fa";
 
 const locales = {
   "en-US": enUS,
@@ -94,9 +95,11 @@ const CalendarView = () => {
 
   return (
     <div className="calendar-container flex flex-col items-center p-4">
+      
   <div className='flex items-center justify-between w-full mb-16 mt-16'>
+  
     <h2 className="text-2xl font-bold">Communication Calendar</h2>
-    <button onClick={() => navigate('/user')} className="text-blue-500 hover:underline">
+    <button onClick={() => navigate('/user')} className="text-blue-500 hover:underline text-2xl">
       Close
     </button>
   </div>

@@ -4,7 +4,7 @@ import NotificationBadge from './NotificationBadge';
 import { FaStepForward } from "react-icons/fa";
 import { FaStepBackward } from "react-icons/fa";
 
-const UserDashboard = () => {
+const UserDashboard = ({setBadgeCount}) => {
     const [dashboardData, setDashboardData] = useState([]);
     const [selectedCompany, setSelectedCompany] = useState(null);
     const [showModal, setShowModal] = useState(false);
@@ -73,7 +73,10 @@ const UserDashboard = () => {
             // Refresh companies to reflect updated data
             const { data } = await axios.get('http://localhost:3500/api/user/dashboard');
             setDashboardData(data);
-            console.log(data)
+            const notifData = await axios.get('http://localhost:3500/api/notifications/getAll');
+            const total = notifData.data.overdue.length + notifData.data.today.length;
+            setBadgeCount(total);
+            // console.log(data)
         } catch (err) {
             console.error('Error logging communication:', err);
         }

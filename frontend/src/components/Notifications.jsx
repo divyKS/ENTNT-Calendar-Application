@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router";
+import { FaHome } from "react-icons/fa";
 
 const Notifications = () => {
     const [notifications, setNotifications] = useState({
@@ -24,12 +25,18 @@ const Notifications = () => {
     return (
         <div className="min-h-screen bg-gray-50">
         {/* Navigation Bar */}
-        <nav className="flex justify-between items-center bg-green-500 text-white px-6 py-4 shadow-md">
+        <nav className="flex justify-between items-center bg-blue-500 text-white px-6 py-4 shadow-md">
             <h2 className="text-xl font-semibold">Notifications</h2>
             <div className="flex items-center space-x-4">
+                <Link to='/user'>
+                <button 
+                className="bg-white text-blue-500 py-2 px-4 text-2xl rounded-md hover:bg-gray-100 transition duration-200 shadow">
+                <FaHome />
+                </button>
+                </Link>
             <Link to="/calendar">
                 <button 
-                className="bg-white text-green-500 font-medium py-2 px-4 rounded-md hover:bg-gray-100 transition duration-200 shadow">
+                className="bg-white text-blue-500 font-medium py-2 px-4 rounded-md hover:bg-gray-100 transition duration-200 shadow">
                 Open Calendar
                 </button>
             </Link>
