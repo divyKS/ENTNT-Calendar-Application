@@ -20,6 +20,7 @@ const localizer = dateFnsLocalizer({
 
 const CalendarView = () => {
     const [events, setEvents] = useState([]);
+    const [selectedEvent, setSelectedEvent] = useState(null);
 
     useEffect(() => {
         // Fetch all communications for calendar view
@@ -64,6 +65,10 @@ const CalendarView = () => {
         return { style };
     };
 
+    const onSelectEvent = (event) => {
+        setSelectedEvent(event); // Set the clicked event
+    };
+
     return (
         <div className="calendar-container">
             <h2 className="text-lg font-bold mb-4">Communication Calendar</h2>
@@ -74,8 +79,20 @@ const CalendarView = () => {
                 endAccessor="end"
                 style={{ height: 600 }}
                 eventPropGetter={eventStyleGetter}
+                onSelectEvent={onSelectEvent}   
                 popup
             />
+
+            {selectedEvent && (
+                <div className="mt-4 p-4 border border-gray-300 rounded shadow">
+                    <h3 className="text-lg font-bold">Event Details</h3>
+                    <p><strong>Company:</strong> {selectedEvent.title.split('-')[0].trim()}</p>
+                    <p><strong>Method:</strong> {selectedEvent.title.split('-')[1].trim()}</p>
+                    <p><strong>Date:</strong> {new Date(selectedEvent.start).toLocaleDateString()}</p>
+                    <p><strong>Notes:</strong> {selectedEvent.notes ? selectedEvent.notes : 'N/A'}</p>
+                    {console.log(selectedEvent)}
+                </div>
+            )}
         </div>
     );
 

@@ -1,3 +1,4 @@
+const communicationLog = require('../models/communicationLog');
 const companySchema = require('../models/company')
 
 const getCalendarCommunications = async (req, res) => {
@@ -13,24 +14,57 @@ const getCalendarCommunications = async (req, res) => {
 
         const currentDate = new Date();
 
-        communications.forEach((company) => {
-            company.communications.forEach((comm) => {
+        for (const company of communications) {
+            for (const comm of company.communications) {
+                // Fetch the latest note for the communication method from communicationLogSchema
+                const latestLog = await communicationLog
+                    .findOne({ companyId: company._id, type: comm.method })
+                    .sort({ date: -1 }); // Sort by date (latest first)
+
+                const notes = latestLog ? latestLog.notes : ''; // Get notes if available
+
                 if (comm.dateDue <= currentDate) {
                     data.past.push({
                         companyName: company.name,
                         method: comm.method,
                         date: comm.dateDue,
-                        notes: comm.notes || '',
+                        notes, // Add notes
                     });
                 } else {
                     data.upcoming.push({
                         companyName: company.name,
                         method: comm.method,
                         date: comm.dateDue,
+                        notes, // Add notes for upcoming too
                     });
                 }
-            });
-        });
+            }
+        }
+
+        // communications.forEach((company) => {
+        //     company.communications.forEach(async (comm) => {
+        //         const latestLog = await communicationLog
+        //             .findOne({ companyId: company._id, type: comm.method })
+        //             .sort({ date: -1 }); // Sort by date (latest first)
+
+        //         const notes = latestLog ? latestLog.notes : ''; // Get notes if available
+
+        //         if (comm.dateDue <= currentDate) {
+        //             data.past.push({
+        //                 companyName: company.name,
+        //                 method: comm.method,
+        //                 date: comm.dateDue,
+        //                 notes: notes,
+        //             });
+        //         } else {
+        //             data.upcoming.push({
+        //                 companyName: company.name,
+        //                 method: comm.method,
+        //                 date: comm.dateDue,
+        //             });
+        //         }
+        //     });
+        // });
 
         res.status(200).json(data);
     } catch (err) {
