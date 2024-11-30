@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router";
-import { FaBell } from "react-icons/fa";
 
 const Notifications = () => {
     const [notifications, setNotifications] = useState({
@@ -13,8 +12,8 @@ const Notifications = () => {
         const fetchNotifications = async () => {
             try {
                 const {data}  = await axios.get("http://localhost:3500/api/notifications/getAll");
-                console.log(data);
                 setNotifications(data);
+                console.log(data);
             } catch (error) {
                 console.error("Error fetching notifications:", error);
             }

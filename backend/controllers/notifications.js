@@ -1,9 +1,10 @@
 const company = require("../models/company");
+const { startOfDay, isBefore, isToday } = require('date-fns')
 
 const tasksOverDueAndDueToday = async (req, res) => {
-    try {
+    try {       
         const currentDate = new Date();
-        const normalizedToday = currentDate.toDateString();
+        const normalizedToday = startOfDay(currentDate); // Get the start of the current day
 
         const companies = await company.find().populate('communications');
 
@@ -11,18 +12,19 @@ const tasksOverDueAndDueToday = async (req, res) => {
         const today = [];
 
         companies.forEach((company) => {
-            company.communications.forEach(async (comm) => {
-                const communicationDate = new Date(comm.dateDue).toDateString();
-                
+            company.communications.forEach((comm) => {
+                const communicationDate = new Date(comm.dateDue); // Convert the due date to a Date object
+
                 if (!comm.complete) {
-                    if (new Date(comm.dateDue) < currentDate) {
+                    // Use isBefore to check if the communication date is before today
+                    if (isBefore(communicationDate, normalizedToday)) {
                         overdue.push({
                             companyId: company._id,
                             name: company.name,
                             method: comm.method,
                             dueDate: comm.dateDue
                         });
-                    } else if (communicationDate === normalizedToday) { // we are ignoring time and only considering the days
+                    } else if (isToday(communicationDate)) { // Check if the communication is due today
                         today.push({
                             companyId: company._id,
                             name: company.name,
@@ -31,17 +33,8 @@ const tasksOverDueAndDueToday = async (req, res) => {
                         });
                     }
                 }
-                // if(!comm.complete){
-                //     if (comm.dateDue < currentDate) {
-                //         overdue.push({ companyId: company._id, name: company.name, method: comm.method, dueDate: comm.dateDue });
-                //     } else if (comm.dateDue == currentDate && comm.dateDue < new Date(currentDate.setDate(currentDate.getDate() + 1))) {
-                //         today.push({ companyId: company._id, name: company.name, method: comm.method, dueDate: comm.dateDue });
-                //     }
-                // }
             });
-        });
-
-        
+        });     
 
         res.status(200).json({ overdue, today });
         // const currentDate = new Date();
