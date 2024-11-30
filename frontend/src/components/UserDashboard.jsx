@@ -58,7 +58,7 @@ const UserDashboard = () => {
         <div>
             <nav>
                 <h2>Dashboard</h2>
-                <NotificationBadge />
+                {/* <NotificationBadge /> */}
             </nav>
             {!showModal && <table>
                 <thead>
