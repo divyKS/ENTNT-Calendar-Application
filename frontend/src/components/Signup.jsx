@@ -23,7 +23,7 @@ const Signup = () => {
     };
 
     return (
-        <div className='flex items-center justify-center min-h-screen bg-gray-100'>
+        <div className='flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-teal-500'>
             <form onSubmit={handleSubmit} className="max-w-md mx-auto bg-white p-6 shadow-md rounded-md">
             <h2 className="text-2xl font-semibold text-gray-800 text-center mb-4">Signup</h2>
             {error && <p className="text-red-600 text-sm text-center mb-4">{error}</p>}
@@ -48,7 +48,7 @@ const Signup = () => {
                 id="password"
                 name="password"
                 type="password"
-                placeholder="Enter your password"
+                placeholder="Create password"
                 value={formData.password}
                 onChange={handleChange}
                 required

@@ -29,13 +29,13 @@ const UserPage = () => {
             <nav className="flex justify-between items-center bg-blue-500 text-white px-6 py-4 shadow-md">
                 <h2 className="text-xl font-semibold">Welcome to the User Page</h2>
                 <div className="flex items-center space-x-4">
+                <NotificationBadge badgeCount={badgeCount} />
                 <Link to="/calendar">
                     <button 
                     className="bg-white text-blue-500 font-medium py-2 px-4 rounded-md hover:bg-gray-100 transition duration-200 shadow">
-                        Open Calendar
+                        Calendar
                     </button>
                 </Link>
-                <NotificationBadge badgeCount={badgeCount} />
                 <LogoutButton />
                 </div>
             </nav>

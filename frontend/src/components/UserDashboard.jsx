@@ -262,16 +262,12 @@ const UserDashboard = ({setBadgeCount}) => {
       >
         &times;
       </button>
-      <h2 className="text-lg font-bold mb-4 text-gray-800">
-        Log Communication for {selectedCompany.companyName}
+      <h2 className="text-xl font-bold mb-4 text-gray-800">
+        Log Communication: {selectedCompany.companyName}
       </h2>
       <form onSubmit={handleSubmit}>
-        <p className="mb-4 text-sm text-gray-600">
-          <strong>Communication details: </strong>
-          {selectedCompany.nextCommunication?.type || 'N/A'} on{' '}
-          {selectedCompany.nextCommunication?.date
-            ? new Date(selectedCompany.nextCommunication.date).toLocaleDateString()
-            : 'N/A'}
+        <p className="mb-4  text-gray-600">
+          Please write a note of what was discussed in this session.<br/>
         </p>
         <label className="block mb-4">
           <span className="text-sm font-medium text-gray-700">Notes:</span>
