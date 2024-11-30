@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { deleteCompany, fetchCompanies } from '../api';
+import React, { useState } from 'react';
 import { useNavigate } from "react-router";
+import { FaMinusCircle, FaPlusCircle } from 'react-icons/fa';
 
 const AdminForm = () => {
+    const navigate = useNavigate();
     
     const defaultMethods = [
         { method: 'LinkedIn Post', description: 'Post about the company', sequence: 1, mandatory: true },
@@ -22,7 +23,7 @@ const AdminForm = () => {
         phoneNumbers: [''],
         comments: '',
         communicationPeriodicity: '14',
-        communications: [...defaultMethods],
+        communications: [{}],
     });
 
     const handleUseDefaultMethods = (e) => {
@@ -49,6 +50,12 @@ const AdminForm = () => {
         updatedArray[index] = value;
         setCompany({ ...company, [field]: updatedArray });
     };
+
+    const handleRemoveArrayItem = (type, index) => {
+        const updatedArray = company[type].filter((_, i) => i !== index);
+        setCompany({ ...company, [type]: updatedArray });
+    };
+
 
     const handleAddCommunication = () => {
         setCompany({
@@ -91,6 +98,9 @@ const AdminForm = () => {
                         { method: '', description: '', sequence: 1, mandatory: false },
                     ],
                 });
+
+                navigate('/admin', { replace: true });
+
             } else {
                 alert(`Error: ${data.message}`);
             }
@@ -102,162 +112,203 @@ const AdminForm = () => {
 
     return (
         <>
-            <div>
-                <h2>Admin Page</h2>
-                <form onSubmit={handleSubmit}>
-                    <h3>Company Details</h3>
-                    <input name="name" value={company.name} onChange={handleChange} placeholder="Company Name" required />
-                    <input name="location" value={company.location} onChange={handleChange} placeholder="Location" required />
-                    <input name="linkedinProfile" value={company.linkedinProfile} onChange={handleChange} placeholder="LinkedIn Profile" required />
-
-                    {company.emails.map((email, index) => (
-                        <input key={index} value={email} onChange={(e) => handleArrayChange(e, 'emails', index)} placeholder="Email" />
-                    ))}
-                    <button type="button" onClick={() => setCompany({ ...company, emails: [...company.emails, ''] })}>
-                        Add Email
-                    </button>
-
-                    {company.phoneNumbers.map((phone, index) => (
-                        <input key={index} value={phone} onChange={(e) => handleArrayChange(e, 'phoneNumbers', index)} placeholder="Phone Number" />
-                    ))}
-                    <button type="button" onClick={() => setCompany({ ...company, phoneNumbers: [...company.phoneNumbers, ''] })}>
-                        Add Phone Number
-                    </button>
-
-                    <textarea name="comments" value={company.comments} onChange={handleChange} placeholder="Comments" />
-
-                    <input name="communicationPeriodicity" type="number" value={company.communicationPeriodicity} onChange={handleChange} />
-
-                    <div>
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={useDefaultMethods}
-                                onChange={handleUseDefaultMethods}
-                            />
-                            Use Default Methods
-                        </label>
-
-                        {company.communications.map((comm, index) => (
-                            <div key={index} className="communication-method">
+        <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="bg-white shadow-lg rounded-lg p-6 w-11/12 md:w-2/3 lg:w-1/2 m-8">
+        <div className='flex items-center justify-between'>
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">Admin Form</h2>
+        <button onClick={() => navigate('/admin')} className="text-blue-500 hover:underline mb-4">
+            Close
+        </button>
+        </div>
+            <form onSubmit={handleSubmit}>
+                <label className="block mb-1">
+                    Company Name
+                    <input name="name" value={company.name} onChange={handleChange} placeholder="Company Name" required className="mt-1 p-2 border rounded w-full" />
+                </label>
+                <label className="block mb-1">
+                    Location
+                    <input name="location" value={company.location} onChange={handleChange} placeholder="Location" required className="mt-1 p-2 border rounded w-full" />
+                </label>
+                <label className="block mb-1">
+                    LinkedIn Profile
+                    <input name="linkedinProfile" value={company.linkedinProfile} onChange={handleChange} placeholder="LinkedIn Profile" required className="mt-1 p-2 border rounded w-full" />
+                </label>
+    
+                {/* Email Section */}
+                <div className="mb-4">
+                        <h4 className="text-lg font-semibold">Emails</h4>
+                        {company.emails.map((email, index) => (
+                            <div key={index} className="flex items-center mb-2">
                                 <input
-                                    name="method"
-                                    value={comm.method}
-                                    onChange={(e) => handleCommunicationChange(e, index)}
-                                    placeholder="Method"
-                                    disabled={useDefaultMethods} // Disable when default methods are used
-                                    required
+                                    value={email}
+                                    onChange={(e) => handleArrayChange(e, 'emails', index)}
+                                    placeholder="Email"
+                                    className="p-2 border rounded w-full"
                                 />
-                                <input
-                                    name="description"
-                                    value={comm.description}
-                                    onChange={(e) => handleCommunicationChange(e, index)}
-                                    placeholder="Description"
-                                    disabled={useDefaultMethods} // Disable when default methods are used
-                                    required
-                                />
-                                <input
-                                    name="sequence"
-                                    type="number"
-                                    value={comm.sequence}
-                                    onChange={(e) => handleCommunicationChange(e, index)}
-                                    placeholder="Sequence"
-                                    disabled={useDefaultMethods} // Disable when default methods are used
-                                    required
-                                />
-                                <label>
-                                    Mandatory:
-                                    <input
-                                        name="mandatory"
-                                        type="checkbox"
-                                        checked={comm.mandatory}
-                                        onChange={(e) => handleCommunicationChange(e, index)}
-                                        disabled={useDefaultMethods} // Disable when default methods are used
-                                    />
-                                </label>
-                        </div>
-                ))}
-
-                {/* Add Communication Button */}
-                {!useDefaultMethods && (
-                    <button type="button" onClick={handleAddCommunication}>
-                        Add Communication Method
-                    </button>
-                )}
+                                {company.emails.length > 1 && (
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveArrayItem('emails', index)}
+                                        className="ml-2 text-red-500"
+                                    >
+                                        <FaMinusCircle />
+                                    </button>
+                                )}
+                            </div>
+                        ))}
+                        <button
+                            type="button"
+                            onClick={() => setCompany({ ...company, emails: [...company.emails, ''] })}
+                            className="text-green-500"
+                        >
+                            <FaPlusCircle /> Add Email
+                        </button>
                     </div>
 
-                    <button type="submit">Save Company</button>
-                </form>
+                    {/* Phone Section */}
+                    <div className="mb-4">
+                        <h4 className="text-lg font-semibold">Phone Numbers</h4>
+                        {company.phoneNumbers.map((phone, index) => (
+                            <div key={index} className="flex items-center mb-2">
+                                <input
+                                    value={phone}
+                                    onChange={(e) => handleArrayChange(e, 'phoneNumbers', index)}
+                                    placeholder="Phone Number"
+                                    className="p-2 border rounded w-full"
+                                />
+                                {company.phoneNumbers.length > 1 && (
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveArrayItem('phoneNumbers', index)}
+                                        className="ml-2 text-red-500"
+                                    >
+                                        <FaMinusCircle />
+                                    </button>
+                                )}
+                            </div>
+                        ))}
+                        <button
+                            type="button"
+                            onClick={() => setCompany({ ...company, phoneNumbers: [...company.phoneNumbers, ''] })}
+                            className="text-green-500"
+                        >
+                            <FaPlusCircle /> Add Phone Number
+                        </button>
+                    </div>
+                        
+                <label className="block mb-1">
+                    Comments
+                    <textarea name="comments" value={company.comments} onChange={handleChange} placeholder="Comments" className="mt-1 p-2 border rounded w-full"></textarea>
+                </label>
+    
+                <div className="flex items-center mb-4">
+                    <label className="mr-2">
+                        Communication Periodicity
+                    </label>
+                    <input
+                        name="communicationPeriodicity"
+                        type="number"
+                        value={company.communicationPeriodicity}
+                        onChange={handleChange}
+                        className="p-2 border rounded w-full"
+                        placeholder="e.g., 30 days"
+                        min={1}
+                    />
+                </div>
+    
+                {/* Communication Methods Table */}
+                <h4 className="text-lg font-semibold mb-2">Communication Methods</h4>
+                <div className="flex items-center mb-4">
+                    <input
+                        type="checkbox"
+                        checked={useDefaultMethods}
+                        onChange={handleUseDefaultMethods}
+                        className="mr-2"
+                        defaultChecked
+                    />
+                    <label>Use Default Methods</label>
+                </div>
+                <table className="min-w-full border border-gray-300 mb-4">
+                    <thead>
+                        <tr className="bg-gray-100">
+                            <th className="border border-gray-300 p-2">Method</th>
+                            <th className="border border-gray-300 p-2">Description</th>
+                            <th className="border border-gray-300 p-2">Sequence</th>
+                            <th className="border border-gray-300 p-2">Mandatory</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {company.communications.map((comm, index) => (
+                            <tr key={index} className="border border-gray-300">
+                                <td className="border border-gray-300 p-2">
+                                    <input
+                                        name="method"
+                                        value={comm.method}
+                                        onChange={(e) => handleCommunicationChange(e, index)}
+                                        placeholder="Method"
+                                        disabled={useDefaultMethods}
+                                        required
+                                        className="p-1 border rounded w-full"
+                                    />
+                                </td>
+                                <td className="border border-gray-300 p-2">
+                                    <input
+                                        name="description"
+                                        value={comm.description}
+                                        onChange={(e) => handleCommunicationChange(e, index)}
+                                        placeholder="Description"
+                                        disabled={useDefaultMethods}
+                                        required
+                                        className="p-1 border rounded w-full"
+                                    />
+                                </td>
+                                <td className="border border-gray-300 p-2">
+                                    <input
+                                        name="sequence"
+                                        type="number"
+                                        value={comm.sequence}
+                                        onChange={(e) => handleCommunicationChange(e, index)}
+                                        disabled={useDefaultMethods}
+                                        required
+                                        className="p-1 border rounded w-full"
+                                    />
+                                </td>
+                                <td className="border border-gray-300 p-2">
+                                    <label>
+                                        <input
+                                            name="mandatory"
+                                            type="checkbox"
+                                            checked={comm.mandatory}
+                                            onChange={(e) => handleCommunicationChange(e, index)}
+                                            disabled={useDefaultMethods}
+                                        />
+                                    </label>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+    
+                {/* Add Communication Button */}
+                {!useDefaultMethods && (
+                    <div className="mb-4">
+                        <button type="button" onClick={handleAddCommunication} className="text-green-500 flex items-center">
+                            <FaPlusCircle className="mr-1" /> Add Communication Method
+                        </button>
+                    </div>
+                )}
+
+                {/* Centered Save Company Button */}
+                <div className="flex justify-center mt-4">
+                    <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">Save Company</button>
+                </div>
+            </form>
+
             </div>
-            <CompaniesList />
-        </>
+            </div>
+    </>
+    
     );
 };
-
-const CompaniesList = () => {
-    const [companies, setCompanies] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    const navigate = useNavigate();
-
-    const handleEdit = (id) => {
-        navigate(`/admin/edit-company/${id}`);
-    };
-
-    const handleDelete = async (id) => {
-        if (window.confirm('Are you sure you want to delete this company?')) {
-            try {
-                await deleteCompany(id);
-                fetchCompanies(); // Refresh the list after deletion
-            } catch (error) {
-                alert('Failed to delete company.');
-            }
-        }
-    };
-
-    useEffect(() => {
-        const getCompanies = async () => {
-            try {
-                const data = await fetchCompanies();
-                setCompanies(data);
-                setLoading(false);
-            } catch (err) {
-                setError('Failed to load companies.');
-                setLoading(false);
-            }
-        };
-
-        getCompanies();
-    }, []);
-
-    if (loading) {
-        return <p>Loading companies...</p>;
-    }
-
-    if (error) {
-        return <p>{error}</p>;
-    }
-
-    return (
-        <div>
-            <h2>Companies List</h2>
-            {companies.length === 0 ? (
-                <p>No companies available.</p>
-            ) : (
-                <ul>
-                    {companies.map((company) => (
-                        <li key={company._id}>
-                            <strong>{company.name}</strong> - {company.location}
-                            <button onClick={() => handleEdit(company._id)}>Edit</button>
-                            <button onClick={() => handleDelete(company._id)}>Delete</button>
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
-    );
-};
-
 
 export default AdminForm;

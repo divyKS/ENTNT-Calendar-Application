@@ -13,7 +13,6 @@ const NotificationBadge = () => {
                 // console.log(data);
                 const total = data.overdue.length + data.today.length;
                 setBadgeCount(total);
-                setBadgeCount(10);
             } catch (error) {
                 console.error('Error fetching notification count:', error);
             }
