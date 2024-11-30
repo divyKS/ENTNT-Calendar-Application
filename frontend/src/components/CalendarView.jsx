@@ -21,6 +21,7 @@ const localizer = dateFnsLocalizer({
 const CalendarView = () => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
+//   console.log(selectedEvent)
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,6 +30,8 @@ const CalendarView = () => {
       .get("http://localhost:3500/api/calendar/getCommunications")
       .then((response) => {
         const { past, upcoming } = response.data;
+        // console.log(past)
+        // console.log(upcoming)
 
         // Map communications into Big Calendar's event format
         const mappedEvents = [
@@ -90,66 +93,59 @@ const CalendarView = () => {
   };
 
   return (
-    <div className="calendar-container flex flex-col items-center">
-      <h2 className="text-lg font-bold mb-16 mt-16">Communication Calendar</h2>
+    <div className="calendar-container flex flex-col items-center p-4">
+  <div className='flex items-center justify-between w-full mb-16 mt-16'>
+    <h2 className="text-2xl font-bold">Communication Calendar</h2>
+    <button onClick={() => navigate('/user')} className="text-blue-500 hover:underline">
+      Close
+    </button>
+  </div>
 
-      <div className="w-full flex items-center justify-around space-x-10">
-        <div className={`w-6/12`} id="calendar">
-          <Calendar
-            localizer={localizer}
-            events={events}
-            startAccessor="start"
-            endAccessor="end"
-            style={{ height: 600 }}
-            eventPropGetter={eventStyleGetter}
-            onSelectEvent={onSelectEvent}
-            popup
-          />
-        </div>
-
-        {selectedEvent && (
-          <div className="w-2/12 mt-4 p-4 border border-gray-300 rounded shadow">
-            <h3 className="text-lg font-bold">Event Details</h3>
-            <p>
-              <strong>Company:</strong>{" "}
-              {selectedEvent.title.split("-")[0].trim()}
-            </p>
-            <p>
-              <strong>Method:</strong>{" "}
-              {selectedEvent.title.split("-")[1].trim()}
-            </p>
-            <p>
-              <strong>Date:</strong>{" "}
-              {new Date(selectedEvent.start).toLocaleDateString()}
-            </p>
-            <p>
-              <strong>Notes:</strong>{" "}
-              {selectedEvent.notes ? selectedEvent.notes : "N/A"}
-            </p>
-          </div>
-        )}
-
-        {!selectedEvent && (
-          <div className="w-2/12 mt-4 p-4 border border-gray-300 rounded shadow flex flex-col items-center">
-            <h3 className="text-lg font-bold">Select an event to see details</h3>
-            <div className="opacity-0">
-                <p>
-                <strong>Company:</strong>{" "}
-                </p>
-                <p>
-                <strong>Method:</strong>{" "}
-                </p>
-                <p>
-                <strong>Date:</strong>{" "}
-                </p>
-                <p>
-                <strong>Notes:</strong>{" "}
-                </p>
-            </div>
-          </div>
-        )}
-      </div>
+  <div className="w-full flex items-center justify-around space-x-10">
+    <div className={`w-4/5`} id="calendar">
+      <Calendar
+        localizer={localizer}
+        events={events}
+        startAccessor="start"
+        endAccessor="end"
+        style={{ height: 600 }}
+        eventPropGetter={eventStyleGetter}
+        onSelectEvent={onSelectEvent}
+        popup
+      />
     </div>
+
+    <div className={`w-1/5 mt-4 p-4 border border-gray-300 rounded shadow flex flex-col justify-center items-center`} style={{ height: '600px' }}>
+      {selectedEvent ? (
+        <>
+          <h3 className="text-lg font-bold">Event Details</h3>
+          <p>
+            <strong>Company:</strong>{" "}
+            {selectedEvent.title.split("-")[0].trim()}
+          </p>
+          <p>
+            <strong>Method:</strong>{" "}
+            {selectedEvent.title.split("-")[1].trim()}
+          </p>
+          <p>
+            <strong>Date:</strong>{" "}
+            {new Date(selectedEvent.start).toLocaleDateString()}
+          </p>
+          <p>
+            <strong>Notes:</strong>{" "}
+            {selectedEvent.notes ? selectedEvent.notes : "N/A"}
+          </p>
+        </>
+      ) : (
+        <div className="text-center">
+          <h3 className="text-lg font-bold">Select an event to see details</h3>
+          <p className="text-gray-500">The details will be displayed here.</p>
+        </div>
+      )}
+    </div>
+  </div>
+</div>
+
   );
 };
 
