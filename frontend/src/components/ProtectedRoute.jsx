@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from "react-router";
+import { Navigate, useNavigate } from "react-router";
 
 const ProtectedRoute = ({ children, role }) => {
     const token = localStorage.getItem('token');
@@ -7,11 +7,11 @@ const ProtectedRoute = ({ children, role }) => {
     let navigate = useNavigate();
 
     if (!token) {
-        return  navigate("/login");
+        return  <Navigate to={"/login"} />
     }
 
     if (role && role !== userRole) {
-        return  navigate("/");
+        return <Navigate to={`/${userRole?.toLowerCase()}`} />;
     }
 
     return children;
