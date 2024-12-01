@@ -15,10 +15,8 @@ function App() {
   return (
     <Routes>
       <Route index element={<LandingPage />} />{" "}
-      {/* Updated to use LandingPage */}
       <Route path="/signup" element={<Signup />} />
       <Route path="/login" element={<Login />} />
-      {/* Protected Routes for Admin */}
       <Route
         path="/admin"
         element={
@@ -43,7 +41,6 @@ function App() {
           </ProtectedRoute>
         }
       />
-      {/* Protected Routes for User */}
       <Route
         path="/user"
         element={
