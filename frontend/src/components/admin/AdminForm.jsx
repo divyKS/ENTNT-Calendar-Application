@@ -300,7 +300,6 @@ const AdminForm = () => {
                 checked={useDefaultMethods}
                 onChange={handleUseDefaultMethods}
                 className="mr-2"
-                defaultChecked
               />
               <label>Use Default Methods</label>
             </div>

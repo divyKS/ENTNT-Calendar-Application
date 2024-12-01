@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaStepForward } from "react-icons/fa";
 import { FaStepBackward } from "react-icons/fa";
 import { fetchAllNotifications, fetchDashboardData, logCommunication } from "../../api";
+import { determineBackgroundColor } from "../../utils";
 
 const UserDashboard = ({ setBadgeCount }) => {
   const [dashboardData, setDashboardData] = useState([]);
@@ -94,16 +95,7 @@ const UserDashboard = ({ setBadgeCount }) => {
                   key={company.companyId}
                   className="border-b"
                   style={{
-                    backgroundColor:
-                      company.lastFiveCommunications.length === 5
-                        ? "#ACE1AF"
-                        : new Date(company.nextCommunication?.date) < new Date()
-                          ? "#FFCDD2"
-                          : new Date(
-                                company.nextCommunication?.date,
-                              ).toDateString() === new Date().toDateString()
-                            ? "#FFF59D"
-                            : "white",
+                    backgroundColor: determineBackgroundColor(company),
                   }}
                 >
                   <td className="px-6 py-4 text-base text-gray-800 font-medium">

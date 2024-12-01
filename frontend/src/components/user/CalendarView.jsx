@@ -60,8 +60,19 @@ const CalendarView = () => {
   }, []);
 
   const eventStyleGetter = (event) => {
+    let backgroundColor;
+    if (event.complete) {
+      backgroundColor = "#d4edda";
+    } else if (event.type === "past") {
+      backgroundColor = "#FF3131";
+    } else if (event.type === "upcoming") {
+      backgroundColor = "#ffeeba";
+    } else {
+      backgroundColor = "white";
+    }
+  
     const style = {
-      backgroundColor: event.complete == 'false' && event.type === "past" ? "#FF3131" : event.complete == 'true' && event.type === "past"? "#d4edda" : "#ffeeba", // CHECK
+      backgroundColor,
       borderRadius: "5px",
       opacity: 0.8,
       color: "black",
@@ -69,6 +80,7 @@ const CalendarView = () => {
       display: "block",
       padding: "5px",
     };
+  
     return { style };
   };
 
