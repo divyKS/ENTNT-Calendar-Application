@@ -4,8 +4,8 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import axios from "axios";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import { enUS } from "date-fns/locale";
-import { Link, useNavigate } from "react-router";
-import { FaHome } from "react-icons/fa";
+import { useNavigate } from "react-router";
+import { getCalendarCommunications } from "../../api";
 
 const locales = {
   "en-US": enUS,
@@ -22,47 +22,46 @@ const localizer = dateFnsLocalizer({
 const CalendarView = () => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  //   console.log(selectedEvent)
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch all communications for calendar view
-    axios
-      .get("http://localhost:3500/api/calendar/getCommunications")
-      .then((response) => {
-        const { past, upcoming } = response.data;
-        // console.log(past)
-        // console.log(upcoming)
+    const fetchCommunications = async () => {
+      try {
+        const { past, upcoming } = await getCalendarCommunications();
 
         // Map communications into Big Calendar's event format
         const mappedEvents = [
           ...past.map((comm) => ({
-            title: `${comm.companyName} - ${comm.method} ✅`,
+            title: `${comm.companyName} - ${comm.method}`,
             start: new Date(comm.date),
             end: new Date(comm.date),
             allDay: true,
             type: "past", // Custom field for type identification
+            complete: comm.complete,
             notes: comm.notes,
           })),
           ...upcoming.map((comm) => ({
-            title: `${comm.companyName} - ${comm.method} 📅`,
+            title: `${comm.companyName} - ${comm.method}`,
             start: new Date(comm.date),
             end: new Date(comm.date),
             allDay: true,
             type: "upcoming", // Custom field for type identification
+            complete: comm.complete,
           })),
         ];
 
         setEvents(mappedEvents);
-      })
-      .catch((error) =>
-        console.error("Error fetching calendar communications:", error),
-      );
+      } catch (error) {
+        console.error("Error fetching and mapping calendar communications:", error);
+      }
+    };
+
+    fetchCommunications();
   }, []);
 
   const eventStyleGetter = (event) => {
     const style = {
-      backgroundColor: event.type === "past" ? "#d4edda" : "#ffeeba", // Green for past, Yellow for upcoming
+      backgroundColor: event.complete == 'false' && event.type === "past" ? "#FF3131" : event.complete == 'true' && event.type === "past"? "#d4edda" : "#ffeeba", // CHECK
       borderRadius: "5px",
       opacity: 0.8,
       color: "black",
@@ -74,23 +73,21 @@ const CalendarView = () => {
   };
 
   const handleClickOutside = (event) => {
-    const calendarElement = document.getElementById("calendar"); // Set an id for your calendar container
+    const calendarElement = document.getElementById("calendar");
     if (calendarElement && !calendarElement.contains(event.target)) {
-      setSelectedEvent(null); // Clear the selected event
+      setSelectedEvent(null);
     }
   };
 
   useEffect(() => {
-    // Add event listener for clicks outside
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      // Clean up the event listener on unmount
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
   const onSelectEvent = (event) => {
-    setSelectedEvent(event); // Set the clicked event
+    setSelectedEvent(event);
   };
 
   return (

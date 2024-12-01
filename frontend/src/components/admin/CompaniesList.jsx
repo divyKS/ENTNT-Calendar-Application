@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { deleteCompany, fetchCompanies } from "../api";
+import { deleteCompany, fetchCompanies } from "../../api";
+
 
 const CompaniesList = () => {
   const [companies, setCompanies] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
@@ -17,11 +18,12 @@ const CompaniesList = () => {
     if (window.confirm("Are you sure you want to delete this company?")) {
       try {
         await deleteCompany(id);
+        setLoading(true);
         const data = await fetchCompanies();
         setCompanies(data);
         setLoading(false);
       } catch (error) {
-        alert("Failed to delete company.");
+        alert(`Failed to delete comapny, ${error}`);
       }
     }
   };
@@ -29,11 +31,12 @@ const CompaniesList = () => {
   useEffect(() => {
     const getCompanies = async () => {
       try {
+        setLoading(true);
         const data = await fetchCompanies();
         setCompanies(data);
         setLoading(false);
       } catch (err) {
-        setError("Failed to load companies.");
+        setError("Failed to load companies");
         setLoading(false);
       }
     };
@@ -42,11 +45,11 @@ const CompaniesList = () => {
   }, []);
 
   if (loading) {
-    return <p>Loading companies...</p>;
+    return <div className="flex items-center justify-center mt-auto mb-auto h-full">Loading companies...</div>;
   }
 
   if (error) {
-    return <p>{error}</p>;
+    return <div className="flex items-center justify-center bg-red-400 h-full mt-auto mb-auto">{error}</div>;
   }
 
   return (

@@ -1,15 +1,15 @@
 import React from "react";
 import { Route, Routes } from "react-router";
-import Signup from "./components/Signup";
-import Login from "./components/Login";
+import Signup from "./components/auth/Signup";
+import Login from "./components/auth/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
-import AdminPage from "./components/AdminPage";
-import UserPage from "./components/UserPage";
-import EditCompany from "./components/EditCompany";
-import Notifications from "./components/Notifications";
-import CalendarView from "./components/CalendarView";
-import AdminForm from "./components/AdminForm";
-import LandingPage from "./components/LandingPage";
+import AdminPage from "./components/admin/AdminPage";
+import UserPage from "./components/user/UserPage";
+import EditCompany from "./components/admin/EditCompany";
+import Notifications from "./components/user/Notifications";
+import CalendarView from "./components/user/CalendarView";
+import AdminForm from "./components/admin/AdminForm";
+import LandingPage from "./components/auth/LandingPage";
 
 function App() {
   return (

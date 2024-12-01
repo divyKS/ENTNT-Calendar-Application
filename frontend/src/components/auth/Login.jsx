@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { signup } from "../api";
+import { login } from "../../api";
 import { useNavigate } from "react-router";
 
-const Signup = () => {
+const Login = () => {
   const [formData, setFormData] = useState({ name: "", password: "" });
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -14,9 +14,10 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await signup(formData);
-    if (result.message === "Signup successful") {
-      navigate("/login");
+    const result = await login(formData);
+    if (result.role) {
+      localStorage.setItem("role", result.role);
+      navigate(result.role === "Admin" ? "/admin" : "/user");
     } else {
       setError(result.message);
     }
@@ -29,7 +30,7 @@ const Signup = () => {
         className="max-w-md mx-auto bg-white p-6 shadow-md rounded-md"
       >
         <h2 className="text-2xl font-semibold text-gray-800 text-center mb-4">
-          Signup
+          Login
         </h2>
         {error && (
           <p className="text-red-600 text-sm text-center mb-4">{error}</p>
@@ -46,7 +47,7 @@ const Signup = () => {
             id="name"
             name="name"
             type="text"
-            placeholder="Enter your name"
+            placeholder="Enter name"
             value={formData.name}
             onChange={handleChange}
             required
@@ -65,7 +66,7 @@ const Signup = () => {
             id="password"
             name="password"
             type="password"
-            placeholder="Create password"
+            placeholder="Enter password"
             value={formData.password}
             onChange={handleChange}
             required
@@ -77,11 +78,11 @@ const Signup = () => {
           type="submit"
           className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200"
         >
-          Signup
+          Login
         </button>
       </form>
     </div>
   );
 };
 
-export default Signup;
+export default Login;

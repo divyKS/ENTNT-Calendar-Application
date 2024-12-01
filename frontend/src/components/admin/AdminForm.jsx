@@ -56,10 +56,8 @@ const AdminForm = () => {
     setUseDefaultMethods(checked);
 
     if (checked) {
-      // Populate default methods and disable further modifications
       setCompany({ ...company, communications: defaultMethods });
     } else {
-      // Clear the default methods, allowing manual input
       setCompany({
         ...company,
         communications: [
@@ -72,18 +70,6 @@ const AdminForm = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCompany({ ...company, [name]: value });
-  };
-
-  const handleArrayChange = (e, field, index) => {
-    const { value } = e.target;
-    const updatedArray = [...company[field]];
-    updatedArray[index] = value;
-    setCompany({ ...company, [field]: updatedArray });
-  };
-
-  const handleRemoveArrayItem = (type, index) => {
-    const updatedArray = company[type].filter((_, i) => i !== index);
-    setCompany({ ...company, [type]: updatedArray });
   };
 
   const handleAddCommunication = () => {
@@ -101,12 +87,27 @@ const AdminForm = () => {
     });
   };
 
+  // for communication methods
   const handleCommunicationChange = (e, index) => {
     const { name, value, type, checked } = e.target;
     const updatedCommunications = [...company.communications];
     updatedCommunications[index][name] = type === "checkbox" ? checked : value;
     setCompany({ ...company, communications: updatedCommunications });
   };
+
+  // for changes in any email/phone number
+  const handleArrayChange = (e, field, index) => {
+    const { value } = e.target;
+    const updatedArray = [...company[field]];
+    updatedArray[index] = value;
+    setCompany({ ...company, [field]: updatedArray });
+  };
+
+  // for removing any email/phone number
+  const handleRemoveArrayItem = (type, index) => {
+    const updatedArray = company[type].filter((_, i) => i !== index);
+    setCompany({ ...company, [type]: updatedArray });
+  }; 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -195,7 +196,6 @@ const AdminForm = () => {
               />
             </label>
 
-            {/* Email Section */}
             <div className="mb-4">
               <h4 className="text-lg font-semibold">Emails</h4>
               {company.emails.map((email, index) => (
@@ -228,7 +228,6 @@ const AdminForm = () => {
               </button>
             </div>
 
-            {/* Phone Section */}
             <div className="mb-4">
               <h4 className="text-lg font-semibold">Phone Numbers</h4>
               {company.phoneNumbers.map((phone, index) => (
@@ -292,7 +291,6 @@ const AdminForm = () => {
               />
             </div>
 
-            {/* Communication Methods Table */}
             <h4 className="text-lg font-semibold mb-2">
               Communication Methods
             </h4>

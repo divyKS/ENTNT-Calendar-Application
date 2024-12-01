@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
-import { fetchCompanies, updateCompany } from "../api";
+import { fetchCompanies, updateCompany } from "../../api";
 
 const EditCompany = () => {
   const { id } = useParams();
+
   const navigate = useNavigate();
+
   const [company, setCompany] = useState({
     name: "",
     location: "",
@@ -14,11 +16,13 @@ const EditCompany = () => {
     comments: "",
     communicationPeriodicity: "",
   });
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCompanyDetails = async () => {
       try {
+        setLoading(true);
         const data = await fetchCompanies();
         const companyData = data.find((c) => c._id === id);
         setCompany(companyData);
@@ -64,7 +68,6 @@ const EditCompany = () => {
     e.preventDefault();
     try {
       await updateCompany(id, company);
-      alert("Company updated successfully");
       navigate("/admin", { replace: true });
     } catch (error) {
       alert("Failed to update company.");
@@ -72,7 +75,7 @@ const EditCompany = () => {
   };
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <div>Loading...</div>;
   }
 
   return (

@@ -1,32 +1,29 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Link } from "react-router";
 import { FaHome } from "react-icons/fa";
+import { fetchAllNotifications } from "../../api";
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState({
-    overdue: [],
-    today: [],
+    overdue: [{}],
+    today: [{}],
   });
 
   useEffect(() => {
-    const fetchNotifications = async () => {
+    const loadNotifications = async () => {
       try {
-        const { data } = await axios.get(
-          "http://localhost:3500/api/notifications/getAll",
-        );
+        const data = await fetchAllNotifications();
         setNotifications(data);
-        console.log(data);
       } catch (error) {
-        console.error("Error fetching notifications:", error);
+        console.error("Failed to load notifications:", error);
       }
     };
-    fetchNotifications();
+
+    loadNotifications();
   }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Navigation Bar */}
       <nav className="flex justify-between items-center bg-blue-500 text-white px-6 py-4 shadow-md">
         <h2 className="text-xl font-semibold">Notifications</h2>
         <div className="flex items-center space-x-4">
@@ -40,17 +37,14 @@ const Notifications = () => {
               Open Calendar
             </button>
           </Link>
-          {/* <FaBell className="text-2xl text-white-400" /> */}
         </div>
       </nav>
 
-      {/* Notifications Content */}
       <div className="p-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-6">
           Your Notifications
         </h2>
 
-        {/* Overdue Communications */}
         <section className="mb-8">
           <h3 className="text-lg font-semibold text-red-500 mb-4">
             Overdue Communications
@@ -76,7 +70,6 @@ const Notifications = () => {
           )}
         </section>
 
-        {/* Today's Communications */}
         <section>
           <h3 className="text-lg font-semibold text-yellow-500 mb-4">
             Today’s Communications

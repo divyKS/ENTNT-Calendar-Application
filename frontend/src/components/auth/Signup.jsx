@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { login } from "../api";
+import { signup } from "../../api";
 import { useNavigate } from "react-router";
 
-const Login = () => {
+const Signup = () => {
   const [formData, setFormData] = useState({ name: "", password: "" });
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -14,11 +14,9 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await login(formData);
-    if (result.token) {
-      localStorage.setItem("token", result.token);
-      localStorage.setItem("role", result.role);
-      navigate(result.role === "Admin" ? "/admin" : "/user");
+    const result = await signup(formData);
+    if (result.message === "Signup successful") {
+      navigate("/login");
     } else {
       setError(result.message);
     }
@@ -31,7 +29,7 @@ const Login = () => {
         className="max-w-md mx-auto bg-white p-6 shadow-md rounded-md"
       >
         <h2 className="text-2xl font-semibold text-gray-800 text-center mb-4">
-          Login
+          Signup
         </h2>
         {error && (
           <p className="text-red-600 text-sm text-center mb-4">{error}</p>
@@ -48,7 +46,7 @@ const Login = () => {
             id="name"
             name="name"
             type="text"
-            placeholder="Enter your name"
+            placeholder="Enter name"
             value={formData.name}
             onChange={handleChange}
             required
@@ -67,7 +65,7 @@ const Login = () => {
             id="password"
             name="password"
             type="password"
-            placeholder="Enter your password"
+            placeholder="Create password"
             value={formData.password}
             onChange={handleChange}
             required
@@ -79,11 +77,11 @@ const Login = () => {
           type="submit"
           className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200"
         >
-          Login
+          Signup
         </button>
       </form>
     </div>
   );
 };
 
-export default Login;
+export default Signup;

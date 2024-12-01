@@ -1,20 +1,18 @@
 import React from "react";
 import { useNavigate } from "react-router";
+import { logout } from "../api";
 
 const LogoutButton = () => {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    // Clear local storage
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-
-    // Optionally call a backend logout endpoint
-    fetch("http://localhost:3500/api/auth/logout", { method: "POST" })
-      .then(() => {
-        navigate("/login");
-      })
-      .catch((err) => console.error("Logout error:", err));
+  const handleLogout = async () => {
+    try {
+      await logout();
+      localStorage.removeItem("role");
+      navigate("/login");
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
   };
 
   return (

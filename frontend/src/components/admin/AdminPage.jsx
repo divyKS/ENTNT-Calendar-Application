@@ -1,8 +1,7 @@
 import React from "react";
-import AdminForm from "./AdminForm";
-import LogoutButton from "./LogoutButton";
+import LogoutButton from "../LogoutButton";
 import { Link } from "react-router";
-import { FaHome, FaPlusCircle, FaSignOutAlt } from "react-icons/fa";
+import { FaPlusCircle } from "react-icons/fa";
 import CompaniesList from "./CompaniesList";
 
 const AdminPage = () => {
@@ -21,12 +20,6 @@ const AdminPage = () => {
           <div className="flex items-center">
             <LogoutButton />
           </div>
-          {/* <div className="flex items-center">
-                        <LogoutButton className="flex items-center hover:text-gray-300">
-                            <FaSignOutAlt className="mr-1" />
-                            Logout
-                        </LogoutButton>
-                    </div> */}
         </div>
       </nav>
       <CompaniesList />

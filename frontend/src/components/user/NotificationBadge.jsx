@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { FaBell } from "react-icons/fa";
-import axios from "axios";
 import { Link } from "react-router";
 
 const NotificationBadge = ({ badgeCount }) => {

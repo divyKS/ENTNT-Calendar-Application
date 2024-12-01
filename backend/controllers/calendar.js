@@ -34,6 +34,7 @@ const getCalendarCommunications = async (req, res) => {
             companyName: company.name,
             method: comm.method,
             date: communicationDate,
+            complete: comm.complete, // CHECK
             notes,
           });
         } else {
@@ -41,6 +42,7 @@ const getCalendarCommunications = async (req, res) => {
             companyName: company.name,
             method: comm.method,
             date: communicationDate,
+            complete: comm.complete, // CHECK
             notes,
           });
         }

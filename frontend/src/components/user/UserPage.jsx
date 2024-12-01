@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import LogoutButton from "./LogoutButton";
+import LogoutButton from "../LogoutButton";
 import UserDashboard from "./UserDashboard";
-import LogCommunication from "./LogCommunication";
 import { Link } from "react-router";
 import NotificationBadge from "./NotificationBadge";
-import axios from "axios";
+import { fetchAllNotifications } from "../../api";
 
 const UserPage = () => {
   const [badgeCount, setBadgeCount] = useState(0);
@@ -12,11 +11,8 @@ const UserPage = () => {
   useEffect(() => {
     const fetchBadgeCount = async () => {
       try {
-        const { data } = await axios.get(
-          "http://localhost:3500/api/notifications/getAll",
-        );
-        // console.log(data);
-        const total = data.overdue.length + data.today.length;
+        const notifData = await fetchAllNotifications();
+        const total = notifData.overdue.length + notifData.today.length;
         setBadgeCount(total);
       } catch (error) {
         console.error("Error fetching notification count:", error);
