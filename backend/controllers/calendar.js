@@ -1,71 +1,51 @@
+const { startOfDay } = require("date-fns/startOfDay");
 const communicationLog = require("../models/communicationLog");
 const companySchema = require("../models/company");
+const { isBefore } = require("date-fns/isBefore");
 
 const getCalendarCommunications = async (req, res) => {
   try {
-    const communications = await companySchema
+    const companies = await companySchema
       .find()
       .populate("communications")
       .select("name communications");
 
     const data = {
-      past: [],
-      upcoming: [],
+      past: [{}],
+      upcoming: [{}],
     };
 
     const currentDate = new Date();
+    const normalizedToday = startOfDay(currentDate)
 
-    for (const company of communications) {
+    for (const company of companies) {
       for (const comm of company.communications) {
-        // Fetch the latest note for the communication method from communicationLogSchema
+        // if a method is logged more than once, then we can have the latest one - my communication methods are cyclic
         const latestLog = await communicationLog
           .findOne({ companyId: company._id, type: comm.method })
-          .sort({ date: -1 }); // Sort by date (latest first)
+          .sort({ date: -1 });
 
-        const notes = latestLog ? latestLog.notes : ""; // Get notes if available
+        const notes = latestLog ? latestLog.notes : "";
+        
+        const communicationDate = new Date(comm.dateDue);
 
-        if (comm.dateDue <= currentDate) {
+        if (isBefore(communicationDate, normalizedToday)) {
           data.past.push({
             companyName: company.name,
             method: comm.method,
-            date: comm.dateDue,
-            notes, // Add notes
+            date: communicationDate,
+            notes,
           });
         } else {
           data.upcoming.push({
             companyName: company.name,
             method: comm.method,
-            date: comm.dateDue,
-            notes, // Add notes for upcoming too
+            date: communicationDate,
+            notes,
           });
         }
       }
     }
-
-    // communications.forEach((company) => {
-    //     company.communications.forEach(async (comm) => {
-    //         const latestLog = await communicationLog
-    //             .findOne({ companyId: company._id, type: comm.method })
-    //             .sort({ date: -1 }); // Sort by date (latest first)
-
-    //         const notes = latestLog ? latestLog.notes : ''; // Get notes if available
-
-    //         if (comm.dateDue <= currentDate) {
-    //             data.past.push({
-    //                 companyName: company.name,
-    //                 method: comm.method,
-    //                 date: comm.dateDue,
-    //                 notes: notes,
-    //             });
-    //         } else {
-    //             data.upcoming.push({
-    //                 companyName: company.name,
-    //                 method: comm.method,
-    //                 date: comm.dateDue,
-    //             });
-    //         }
-    //     });
-    // });
 
     res.status(200).json(data);
   } catch (err) {

@@ -1,8 +1,5 @@
 const User = require("../models/users");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-
-const JWT_SECRET = process.env.JWT_SECRET;
 
 const signup = async (req, res) => {
   const { name, password } = req.body;
@@ -40,11 +37,7 @@ const login = async (req, res) => {
       return res.status(401).json({ message: "Invalid username or password" });
     }
 
-    const token = jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET, {
-      expiresIn: "1h",
-    });
-
-    res.json({ message: "Login successful", token, role: user.role });
+    res.json({ message: "Login successful", role: user.role });
   } catch (error) {
     res.status(500).json({ message: "Error during signin", error });
   }

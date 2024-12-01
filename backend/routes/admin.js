@@ -8,8 +8,8 @@ const {
 
 const router = express.Router();
 
-router.post("/add-company", addCompany);
 router.get("/companies", getCompanies);
+router.post("/add-company", addCompany);
 router.put("/companies/:id", editCompany);
 router.delete("/companies/:id", deleteCompany);
 

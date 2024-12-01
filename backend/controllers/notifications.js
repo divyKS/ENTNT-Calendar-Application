@@ -4,7 +4,7 @@ const { startOfDay, isBefore, isToday } = require("date-fns");
 const tasksOverDueAndDueToday = async (req, res) => {
   try {
     const currentDate = new Date();
-    const normalizedToday = startOfDay(currentDate); // Get the start of the current day
+    const normalizedToday = startOfDay(currentDate);
 
     const companies = await company.find().populate("communications");
 
@@ -13,10 +13,9 @@ const tasksOverDueAndDueToday = async (req, res) => {
 
     companies.forEach((company) => {
       company.communications.forEach((comm) => {
-        const communicationDate = new Date(comm.dateDue); // Convert the due date to a Date object
+        const communicationDate = new Date(comm.dateDue);
 
         if (!comm.complete) {
-          // Use isBefore to check if the communication date is before today
           if (isBefore(communicationDate, normalizedToday)) {
             overdue.push({
               companyId: company._id,
@@ -25,7 +24,6 @@ const tasksOverDueAndDueToday = async (req, res) => {
               dueDate: comm.dateDue,
             });
           } else if (isToday(communicationDate)) {
-            // Check if the communication is due today
             today.push({
               companyId: company._id,
               name: company.name,
@@ -38,27 +36,6 @@ const tasksOverDueAndDueToday = async (req, res) => {
     });
 
     res.status(200).json({ overdue, today });
-    // const currentDate = new Date();
-    // const startOfToday = new Date(
-    //     currentDate.getFullYear(),
-    //     currentDate.getMonth(),
-    //     currentDate.getDate()
-    // );
-
-    // // Fetch overdue communications
-    // const overdueCompanies = await company.find({
-    //     'nextCommunication.date': { $lt: startOfToday },
-    // }).select({});
-
-    // // Fetch today's communications
-    // const todayCompanies = await company.find({
-    //     'nextCommunication.date': { $gte: startOfToday, $lt: new Date(startOfToday).setDate(startOfToday.getDate() + 1) },
-    // }).select({});
-
-    // res.status(200).json({
-    //     overdue: overdueCompanies,
-    //     today: todayCompanies,
-    // });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to fetch notifications." });

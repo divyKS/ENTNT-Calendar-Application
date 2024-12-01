@@ -11,41 +11,16 @@ const addCompany = async (req, res) => {
     communicationPeriodicity,
     communications,
   } = req.body;
-  // try {
-  //     const newCompany = new company({
-  //         name,
-  //         location,
-  //         linkedinProfile,
-  //         emails,
-  //         phoneNumbers,
-  //         comments,
-  //         communicationPeriodicity,
-  //         communications,
-  //     });
-  //     const savedCompany = await newCompany.save();
-  //     res.status(201).json({ message: 'Company added successfully', company: savedCompany });
-  // } catch (error) {
-  //     res.status(500).json({ message: 'Error adding company', error });
-  // }
 
   try {
-    // Ensure communication methods exist
     if (!communications || communications.length === 0) {
       return res
         .status(400)
         .json({ error: "Communication methods are required." });
     }
 
-    // now having at correct intervals, not using this
-    // const firstMethod = communications[0];
-    // const nextCommunication = {
-    //     type: firstMethod.method,
-    //     date: new Date().setDate(new Date().getDate() + 1),
-    // };
-
     const currentDate = new Date();
 
-    // Set initial dates for all communication methods
     const updatedCommunications = communications.map((comm, index) => ({
       ...comm,
       dateDue: new Date(
@@ -78,7 +53,6 @@ const addCompany = async (req, res) => {
 
 const getCompanies = async (req, res) => {
   try {
-    // const companies = await company.find({}, 'name location'); // Fetch name and location fields only
     const companies = await company.find({});
     res.status(200).json(companies);
   } catch (err) {
